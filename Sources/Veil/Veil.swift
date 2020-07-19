@@ -105,12 +105,12 @@ public class Veil {
         self.init(pattern: pattern, config: config)
     }
 
-    public func mask(input: String) -> String {
-        Self.mask(input: input, pattern: pattern, config: config)
+    public func mask(input: String, exhaustive: Bool = true) -> String {
+        Self.mask(input: input, pattern: pattern, config: config, exhaustive: exhaustive)
     }
 
-    public func process(input: String) -> (masked: String, unmasked: String) {
-        Self.process(input: input, pattern: pattern, config: config)
+    public func process(input: String, exhaustive: Bool = true) -> (masked: String, unmasked: String) {
+        Self.process(input: input, pattern: pattern, config: config, exhaustive: exhaustive)
     }
 
     // MARK: Helpers
@@ -124,17 +124,17 @@ public class Veil {
         String(pattern.map({ $0.toChar(config: config) }))
     }
 
-    static func mask(input: String, pattern: Pattern, config: Config) -> String {
-        Self.process(input: input, pattern: pattern, config: config).masked
+    static func mask(input: String, pattern: Pattern, config: Config, exhaustive: Bool = true) -> String {
+        Self.process(input: input, pattern: pattern, config: config, exhaustive: exhaustive).masked
     }
 
-    static func process(input: String, pattern: Pattern, config: Config) -> (masked: String, unmasked: String) {
+    static func process(input: String, pattern: Pattern, config: Config, exhaustive: Bool = true) -> (masked: String, unmasked: String) {
         guard let token = pattern.first else {
             return ("", "")
         }
 
         guard let inputChar = input.first else {
-            return (Self.patternToString(pattern, config: config), "")
+            return exhaustive ? (Self.patternToString(pattern, config: config), "") : ("", "")
         }
 
         let inputRemaining = input.tail
@@ -145,13 +145,13 @@ public class Veil {
 
         let result = process(
                     input: matches ? String(inputRemaining) : input, pattern: tokensRemaining,
-                    config: config)
+                    config: config,
+                    exhaustive: exhaustive)
 
 
         return (output + result.masked, pureInput + result.unmasked)
 
     }
-
 }
 
 extension String {

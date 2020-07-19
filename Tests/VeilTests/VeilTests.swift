@@ -15,6 +15,13 @@ final class VeilTests: XCTestCase {
         XCTAssert(unmaskedInput == "123")
     }
 
+    func test_textfield_input_non_exhaustive() {
+        let mask = Veil(stringPattern: "(###)")
+        let (maskedInput, unmaskedInput) = mask.process(input: "12", exhaustive: false)
+        XCTAssert(maskedInput == "(12")
+        XCTAssert(unmaskedInput == "12")
+    }
+
 
     static var allTests = [
         ("testExample", test_can_mask_input),
