@@ -74,6 +74,7 @@ public class Veil {
         }
     }
 
+    /// Configuration used to parse mask pattern
     public struct Config {
         let digitChar: Character
         let anyChar: Character
@@ -98,17 +99,46 @@ public class Veil {
         self.config = config
     }
 
-    public convenience init(stringPattern: String, config: Config = .defaultConf()) {
-        let pattern = Self.stringToChars(stringPattern).map {
+    /**
+     Creates a masking object
+
+     Note the default configuration uses `#` to represent any digit and `*` to represent any char.
+
+     - Parameter config: The configuration used to parse the mask pattern
+     - Parameter pattern: A string representing the mask that will be applied to a give input
+
+     */
+    public convenience init(pattern string: String, config: Config = .defaultConf()) {
+        let pattern = Self.stringToChars(string).map {
             Token(fromCharacter: $0, config: config)
         }
         self.init(pattern: pattern, config: config)
     }
 
+    /**
+     Provide masked
+
+     Note to do live input masking make sure to use non exhuastive option.
+
+     - Parameter input: The input string to process
+     - Parameter exhaustive: Wether or not should stop at last token of the pattern.
+     - Returns: String masking the input string
+
+     */
     public func mask(input: String, exhaustive: Bool = true) -> String {
         Self.mask(input: input, pattern: pattern, config: config, exhaustive: exhaustive)
     }
 
+    /**
+     Provide masked and unmasked versions of input
+
+     Note to do live input masking make sure to use non exhuastive option.
+
+     - Parameter input: The input string to process
+     - Parameter exhaustive: Wether or not should stop at last token of the pattern.
+     - Returns: A 2 component tuple of masked and unmasked input
+
+     */
     public func process(input: String, exhaustive: Bool = true) -> (masked: String, unmasked: String) {
         Self.process(input: input, pattern: pattern, config: config, exhaustive: exhaustive)
     }
