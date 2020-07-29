@@ -3,20 +3,20 @@ import XCTest
 
 final class VeilTests: XCTestCase {
     func test_can_mask_input() {
-        let mask = Veil(stringPattern: "(###)")
+        let mask = Veil(pattern: "(###)")
         let result = mask.mask(input: "123")
         XCTAssert(result == "(123)")
     }
 
     func test_can_process_input() {
-        let mask = Veil(stringPattern: "(###)")
+        let mask = Veil(pattern: "(###)")
         let (maskedInput, unmaskedInput) = mask.process(input: "(123")
         XCTAssert(maskedInput == "(123)")
         XCTAssert(unmaskedInput == "123")
     }
 
     func test_textfield_input_non_exhaustive() {
-        let mask = Veil(stringPattern: "(###)")
+        let mask = Veil(pattern: "(###)")
         let (maskedInput, unmaskedInput) = mask.process(input: "12", exhaustive: false)
         XCTAssert(maskedInput == "(12")
         XCTAssert(unmaskedInput == "12")

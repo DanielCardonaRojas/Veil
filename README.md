@@ -42,6 +42,8 @@ UITextField integration is simple and doesn't require usage of its delegate.
 
 This how you can accomplish live masking of textfields.
 
+![](demo1.gif)
+
 ```swift
 let dateMask = Veil(pattern: "## / ##")
 
