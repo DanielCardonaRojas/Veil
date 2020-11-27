@@ -2,18 +2,23 @@ name: Swift
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   build:
-
     runs-on: macos-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Build
-      run: swift build -v
-    - name: Run tests
-      run: swift test -v
+      - uses: actions/checkout@v2
+      - name: Build
+        run: swift build -v
+      - name: Test
+        run: set -o pipefail && swift test --enable-code-coverage 2>&1 | xcpretty --color
+      - name: Collect coverage
+        run: ./cov.sh
+      - name: Publish to Codecov
+        run: bash <(curl -s https://codecov.io/bash)
+        env:
+          CODECOV_TOKEN: 9e38a148-1e82-4234-bf21-4180577cc9b5

@@ -1,7 +1,7 @@
 # Veil
 
 ![Swift](https://github.com/DanielCardonaRojas/Veil/workflows/Swift/badge.svg)
-
+[![codecov](https://codecov.io/gh/DanielCardonaRojas/Veil/branch/master/graph/badge.svg?token=V46EYQLM5E)](https://codecov.io/gh/DanielCardonaRojas/Veil)
 
 Easy and flexible string masking utility.
 
@@ -16,25 +16,23 @@ Easy and flexible string masking utility.
 
 Veil comes with support for SwiftPM so just copy this repos url into your Xcode project
 
-
 ## Usage
 
 Veil enables string masking by providing a pattern of special characters
 
-To create for instance a date formatter for  `mm / yy` this is as simple as: 
+To create for instance a date formatter for `mm / yy` this is as simple as:
 
 ```swift
-let dateMask = Veil(pattern: "## / ##") 
-let result = dateMask.mask(input: "234") 
+let dateMask = Veil(pattern: "## / ##")
+let result = dateMask.mask(input: "234")
 // result = "23 / 4"
 ```
 
 Veil uses a configuration object to specify how to parse the mask pattern.
 The default configuration uses `#` to represent any digit and `*` to represent other characters.
 
-Also notice that Veil will pickup any other character such as `/` and spaces as symbols in the pattern and 
+Also notice that Veil will pickup any other character such as `/` and spaces as symbols in the pattern and
 will insert them automatically in the resulting string.
-
 
 ## UITextField integration
 
@@ -56,5 +54,4 @@ let dateMask = Veil(pattern: "## / ##")
 }
 ```
 
-When performing masking of live input just make sure to use the exhaustive option set to `false` 
-
+When performing masking of live input just make sure to use the exhaustive option set to `false`
