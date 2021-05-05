@@ -7,7 +7,7 @@ Easy and flexible string masking utility.
 
 **Features**
 
-- Platform independent (this is a pure swift package, no dependencies)
+- Platform independent (this is a pure swift package)
 - Provides masked and unmasked input (process method).
 - Easy integration to (UIKit, SwiftUI)
 - Input blocking comes free.
