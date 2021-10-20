@@ -11,13 +11,15 @@ import Foundation
 public class Veil {
     typealias Pattern = [Token]
 
-    enum Token {
-        case digit, any
+    enum Token: Equatable {
+        case digit, any, letter
         case symbol(Character)
 
         init(fromCharacter char: Character, config: Config) {
             if char == config.digitChar {
                 self = .digit
+            } else if char == config.letterChar {
+                self = .letter
             } else if char == config.anyChar {
                 self = .any
             } else {
@@ -26,16 +28,16 @@ public class Veil {
         }
 
         /**
-         Process a char accordinto to token
+         Process a char according to token configuration
 
-           Writes either the provided character if matches digit or any token
-           or the token symbol.
+           Writes either the provided character if matches the token type
+           or writes a symbol
 
          - Parameter char: The input character being processed
          - Returns: Single character string
 
          */
-        public func write(_ char: Character) -> (Bool, String) {
+        public func maskCharacter(_ char: Character) -> (Bool, String) {
             let charString = String(char)
             switch self {
             case .digit:
@@ -43,18 +45,33 @@ public class Veil {
                 return (isInt, isInt ? charString : "")
             case .any:
                 return (true, charString)
+            case .letter:
+                let isLetter = !CharacterSet.letters.isDisjoint(with: CharacterSet(charactersIn: charString))
+                return (isLetter, isLetter ? charString : "")
             case .symbol(let sym):
                 return (char == sym, String(sym))
             }
         }
 
-        public func read(_ char: Character) -> (Bool, String) {
+        /**
+         Process a char according to token configuration but does not write symbols
 
+           Writes either the provided character if matches the token type or returns an empty string
+           Note: This serves as a blocking mechanism on text input.
+
+         - Parameter char: The input character being processed
+         - Returns: Single character string
+
+         */
+        public func read(_ char: Character) -> (Bool, String) {
             let charString = String(char)
             switch self {
             case .digit:
                 let isInt = Int(charString) != nil
                 return (isInt, isInt ? charString : "")
+            case .letter:
+                let isLetter = !CharacterSet.letters.isDisjoint(with: CharacterSet(charactersIn: "\(char)"))
+                return (isLetter, isLetter ? charString : "")
             case .any:
                 return (true, charString)
             case .symbol(let sym):
@@ -66,6 +83,8 @@ public class Veil {
             switch self {
             case .digit:
                 return config.digitChar
+            case .letter:
+                return config.letterChar
             case .any:
                 return config.anyChar
             case .symbol(let sym):
@@ -78,14 +97,16 @@ public class Veil {
     public struct Config {
         let digitChar: Character
         let anyChar: Character
+        let letterChar: Character
 
-        public init(digitChar: Character, anyChar: Character) {
+        public init(digitChar: Character, anyChar: Character, letterChar: Character = "A") {
             self.digitChar = digitChar
             self.anyChar = anyChar
+            self.letterChar = letterChar
         }
 
         public static func defaultConf() -> Config {
-            Config(digitChar: "#", anyChar: "*")
+            Config(digitChar: "#", anyChar: "*", letterChar: "A")
         }
     }
 
@@ -170,7 +191,7 @@ public class Veil {
         let inputRemaining = input.tail
         let tokensRemaining = Array(pattern.suffix(from: 1))
 
-        let (matches, output) = token.write(inputChar)
+        let (matches, output) = token.maskCharacter(inputChar)
         let (_, pureInput) = token.read(inputChar)
 
         let result = process(
