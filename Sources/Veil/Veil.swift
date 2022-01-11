@@ -193,7 +193,9 @@ public class Veil {
 
         let (matches, output) = token.maskCharacter(inputChar)
         let (_, pureInput) = token.read(inputChar)
-
+        
+        guard !output.isEmpty else { return (output, pureInput) }
+        
         let result = process(
                     input: matches ? String(inputRemaining) : input, pattern: tokensRemaining,
                     config: config,
