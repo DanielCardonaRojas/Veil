@@ -29,6 +29,19 @@ final class VeilTests: XCTestCase {
         XCTAssert(unmaskedInput == "12")
     }
 
+    func test_cannot_process_digit_pattern() {
+        let mask = Veil(pattern: "##.##.####")
+        let (maskedInput, unmaskedInput) = mask.process(input: "sometext", exhaustive: false)
+        XCTAssertEqual(maskedInput, "")
+        XCTAssertEqual(unmaskedInput, "")
+    }
+    
+    func test_can_process_some_digit_pattern() {
+        let mask = Veil(pattern: "##.##.####")
+        let (maskedInput, unmaskedInput) = mask.process(input: "12andtext", exhaustive: false)
+        XCTAssertEqual(maskedInput, "12.")
+        XCTAssertEqual(unmaskedInput, "12")
+    }
 
     static var allTests = [
         ("testExample", test_can_mask_input),
